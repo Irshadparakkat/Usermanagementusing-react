@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route,redirect, Navigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import SignupPage from '../Pages/User/SignupPage';
 import LoginPage from '../Pages/User/LoginPage';
@@ -13,11 +13,11 @@ function User() {
     return (
         <div>
             <Routes>
-                <Route path='/' element={<HomePage />} />
+                <Route path='/' element={  <HomePage />} />
                 <Route path='/signup' element={<SignupPage />} />
-                <Route path='/login' element={<LoginPage />} />
-                <Route path='/myaccount' element={user.userToken ? <Myaccount /> : <LoginPage />} />
-                <Route path='/editaccount' element={user.userToken ? <EditprofilePage /> : <LoginPage />} />
+                <Route path='/login' element={user.userToken ? <Navigate replace to="/" /> : <LoginPage />} />
+                <Route path='/myaccount' element={user.userToken ? <Myaccount /> : <Navigate replace to="/login" />} />
+                <Route path='/editaccount' element={user.userToken ? <EditprofilePage /> : <Navigate replace to="/login" />} />
             </Routes>
         </div>
     )

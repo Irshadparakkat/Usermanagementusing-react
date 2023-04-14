@@ -51,3 +51,28 @@ module.exports.deleteUser=async(req,res)=>{
         console.log(error);
     }
 }
+module.exports.editUser=async(req,res)=>{
+    try {
+        
+        let{id}=req.query
+        const users= await userCollection.findOne({_id: id})
+        res.json({"status":"success",users:users})
+    } catch (error) {
+        res.json({"status":"failed",message:error.message})
+        console.log(error);
+    }
+}
+module.exports.editSubmit=async(req,res)=>{
+    try {
+        const {name,email,phone,id}=req.body
+        await userCollection.findByIdAndUpdate(id,{
+            name:name,
+            email:email,
+            phone:phone,
+            
+        })
+        res.json({status:'success'})
+    } catch (error) {
+        res.json({status:'failed'})
+    }
+}

@@ -51,7 +51,7 @@ module.exports.postLogin=async(req,res)=>{
 
                 res.cookie("jwt",obj,{
                     httpOnly: false,
-                    maxAge: 6000 * 1000,
+                    maxAge: 600000 * 100000,
                 }).status(200).send({userSignUpp})
 
             } else {

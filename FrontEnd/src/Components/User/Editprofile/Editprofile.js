@@ -1,10 +1,11 @@
-import  Axios  from 'axios'
+
 import swal from 'sweetalert'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { userAPI } from '../../../API'
+
 import './Editprofile.css'
+import { Axios } from '../../../Axios'
 
 function Editprofile() {
 
@@ -23,7 +24,7 @@ function Editprofile() {
     }
 
     useEffect(()=>{
-        Axios.get(`${userAPI}userProfile`,{params: { token: user.userToken}}).then((response)=>{
+        Axios.get(`/userProfile`,{params: { token: user.userToken}}).then((response)=>{
         setName(response.data.userDetails.name) 
         setEmail(response.data.userDetails.email) 
         setPhone(response.data.userDetails.phone)
@@ -46,7 +47,7 @@ function Editprofile() {
     const handleUpdateProfile=async(e)=>{
         e.preventDefault()
         const imgBase = await toBase64(image)   
-        Axios.post(`${userAPI}editProfilePhoto`,{name:name,email:email,phone:phone,token:user.userToken,image:imgBase}).then((response)=>{
+        Axios.post(`/editProfilePhoto`,{name:name,email:email,phone:phone,token:user.userToken,image:imgBase}).then((response)=>{
             if (response.data.status==='success') {
                 swal('work is done').then((result)=>{
                     navigate('/myaccount')

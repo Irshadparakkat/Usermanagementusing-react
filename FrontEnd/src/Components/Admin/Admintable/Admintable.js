@@ -2,27 +2,31 @@ import React, { useEffect, useState } from 'react'
 import Table from 'react-bootstrap/Table'
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
-import  Axios  from 'axios'
+import { useNavigate } from 'react-router-dom' 
 import swal from 'sweetalert'
-import { adminAPI } from '../../../API'
+
+import { axiosAdmin } from '../../../Axios'
 
 function Admintable() {
+    const [show,setShow]=useState([])
     const [userData,setUserData]=useState([])
     const [deleteuser,setdeleteuser]=useState(0)
     const [SearchInput, setSearchInput] = useState("")
-
+    const navigate=useNavigate()
 
     useEffect(()=>{
-        Axios.get(`${adminAPI}getUserDetails`).then((response)=>{
+        axiosAdmin.get(`/getUserDetails`).then((response)=>{
             setUserData(response.data.data)
+            setShow(response.data.data)
         }).catch(error => {
             console.log(error);
         })
     },[deleteuser===0])
 
     const DeleteUser=(id)=>{
-        Axios.post(`${adminAPI}deleteUser`,{id}).then((response)=>{
+        axiosAdmin.delete(`/deleteUser`,{id}).then((response)=>{
             setUserData(response.data.result);
+            setShow(response.data.result)
             swal("Poof! Your imaginary file has been deleted!", {
                 icon: "success",
               });
@@ -33,14 +37,15 @@ function Admintable() {
     }
 
 
-    const handleChange = (event) => {
-        setSearchInput(event.target.value)
-        setdeleteuser(0)
-       if(SearchInput){
-        let uppdateUse=userData.filter((item)=>item.name.toLowerCase().indexOf(SearchInput.toLowerCase()) !== -1  )
+    const handleChange =(event) => {
+         setSearchInput(event.target.value)
+        
+       if(event.target.value){
+        console.log(event.target.value)
+        let uppdateUse=show.filter((item)=>item.name.toLowerCase().indexOf(event.target.value.toLowerCase()) !== -1  )
         setUserData(uppdateUse)
        }else{
-        setdeleteuser(1)
+        setUserData(show)
        }
      
     }
@@ -63,6 +68,8 @@ function Admintable() {
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Delete </th>
+                            <th>Edit </th>
+                           
                         </tr>
                     </thead>
                     <tbody>
@@ -76,6 +83,10 @@ function Admintable() {
                                     <td key={obj.id}>
                                     <Button onClick={() => DeleteUser(obj._id)} variant="danger">Delete</Button>
                                     </td>
+                                    <td key={obj.id}>
+                                    <Button onClick={() => navigate(`/admin/edit/${obj._id}`)} variant="info">Editprofile</Button>
+                                    </td>
+                                   
                                 </tr>
                                 )
                             })}

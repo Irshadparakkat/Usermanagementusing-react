@@ -1,8 +1,9 @@
-import  Axios  from 'axios'
+
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { userAPI } from '../../../API'
+import { Axios } from '../../../Axios'
+
 
 function Myaccount() {
 
@@ -15,7 +16,7 @@ function Myaccount() {
   }
 
   useEffect(()=>{
-    Axios.get(`${userAPI}userProfile`,{params: { token: user.userToken}}).then((response)=>{
+    Axios.get(`/userProfile`,{params: { token: user.userToken}}).then((response)=>{
     setUserData(response.data.userDetails)
     }).catch(error=>{
       console.log(error);

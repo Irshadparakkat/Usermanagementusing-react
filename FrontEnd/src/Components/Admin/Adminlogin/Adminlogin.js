@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import classes from './Adminlogin.module.css'
 import Button from '../../../Components/User/Button/Button'
 import { useNavigate } from 'react-router-dom'
-import  Axios  from 'axios'
-import { adminAPI } from '../../../API'
+
+
 import { useDispatch } from 'react-redux'
 import { AdminActions } from '../../../Store/Adminauth'
+import { axiosAdmin } from '../../../Axios'
 
 function Adminlogin() {
     const [email,setEmail]=useState('')
@@ -17,7 +18,20 @@ function Adminlogin() {
 
     const adminFormSubmit=(e)=>{
         e.preventDefault()
-        Axios.post(`${adminAPI}adminLogin`,{email , password}).then((response)=>{
+        let atposition=email.indexOf("@");
+       let dotposition=email.lastIndexOf(".")
+       if(email.length==0||password.length==0){
+        setErrMessage("Please fill all fields")
+       }
+       
+        else if(atposition<1||dotposition<atposition+2||dotposition+2>=email.length){
+            setErrMessage("Enter a valid email")
+        }
+        else if(password.length<5){
+            setErrMessage("Enter a password with 6 characters")
+        }
+        else{
+        axiosAdmin.post(`/adminLogin`,{email , password}).then((response)=>{
             const result=response.data.adminResult
             if (result.Status) {
                 dispatch(AdminActions.AddAdmin({token:result.token}))
@@ -27,6 +41,7 @@ function Adminlogin() {
             }
         })
     }
+    }
     return (
     <div className='container'>
             <div className={classes.login} >
@@ -34,11 +49,11 @@ function Adminlogin() {
                 <form onSubmit={adminFormSubmit}>
                     <div className={classes.control} >
                         <label htmlFor="email">E-Mail</label>
-                        <input type="email" id="email" value={email} required onChange={(e)=>{setEmail(e.target.value)}}/>
+                        <input type="email" id="email" value={email}  onChange={(e)=>{setEmail(e.target.value)}}/>
                     </div>
                     <div className={classes.control} >
                         <label htmlFor="password">Password</label>
-                        <input type="password" id="password" value={password} required onChange={(e)=>{setPassword(e.target.value)}}/>
+                        <input type="password" id="password" value={password}  onChange={(e)=>{setPassword(e.target.value)}}/>
                     </div>
                     <div className={classes.actions}>
                         <button type="submit" className={classes.button} >
